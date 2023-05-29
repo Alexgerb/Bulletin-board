@@ -11,7 +11,7 @@ public class Ads {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer user;
+    private Integer author;
 
     private String title;
 
@@ -22,9 +22,9 @@ public class Ads {
     public Ads() {
     }
 
-    public Ads(Integer id, Integer user, String title, String image, int price) {
+    public Ads(Integer id, Integer author, String title, String image, int price) {
         this.id = id;
-        this.user = user;
+        this.author = author;
         this.title = title;
         this.image = image;
         this.price = price;
@@ -34,16 +34,16 @@ public class Ads {
         return id;
     }
 
+    public Integer getAuthor() {
+        return author;
+    }
+
     public String getTitle() {
         return title;
     }
 
     public int getPrice() {
         return price;
-    }
-
-    public Integer getUser() {
-        return user;
     }
 
     public String getImage() {
@@ -55,19 +55,19 @@ public class Ads {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Ads ads = (Ads) o;
-        return price == ads.price && Objects.equals(id, ads.id) && Objects.equals(user, ads.user) && Objects.equals(title, ads.title) && Objects.equals(image, ads.image);
+        return price == ads.price && Objects.equals(id, ads.id) && Objects.equals(author, ads.author) && Objects.equals(title, ads.title) && Objects.equals(image, ads.image);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, title, image, price);
+        return Objects.hash(id, author, title, image, price);
     }
 
     @Override
     public String toString() {
         return "Ads{" +
                 "id=" + id +
-                ", user=" + user +
+                ", author=" + author +
                 ", title='" + title + '\'' +
                 ", image='" + image + '\'' +
                 ", price=" + price +
