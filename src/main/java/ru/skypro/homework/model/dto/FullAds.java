@@ -3,7 +3,7 @@ package ru.skypro.homework.model.dto;
 import lombok.Data;
 
 @Data
-public class FullAdsDto {
+public class FullAds {
     private  Integer id;
     private  String authorFirstName;
     private String authorLastName;

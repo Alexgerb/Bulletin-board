@@ -6,7 +6,7 @@ import ru.skypro.homework.model.entity.Comment;
 import java.util.Collection;
 
 @Data
-public class ResponseWrapperCommentDto {
+public class ResponseWrapperComment {
     private Integer count;
     private Collection<Comment> results;
 }
