@@ -1,7 +1,9 @@
 package ru.skypro.homework.model.entity;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -19,7 +21,11 @@ public class User {
 
     private String phone;
 
-    private String image;
+    @Lob
+    private byte[] avatar;  //image
+
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
+    private Set<Ads> ads;
 
 
     public User() {
@@ -52,25 +58,38 @@ public class User {
         return phone;
     }
 
-    public String getImage() {
-        return image;
+    public byte[] getAvatar() {
+        return avatar;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public Set<Ads> getAds() {
+        return ads;
     }
+
+
+
+    public void setAvatar(byte[] avatar) {
+        this.avatar = avatar;
+    }
+
+    public void setAds(Set<Ads> ads) {
+        this.ads = ads;
+    }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(email, user.email) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(phone, user.phone) && Objects.equals(image, user.image);
+        return Objects.equals(id, user.id) && Objects.equals(email, user.email) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(phone, user.phone) && Arrays.equals(avatar, user.avatar) && Objects.equals(ads, user.ads);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, firstName, lastName, phone, image);
+        int result = Objects.hash(id, email, firstName, lastName, phone, ads);
+        result = 31 * result + Arrays.hashCode(avatar);
+        return result;
     }
 
     @Override
@@ -81,7 +100,7 @@ public class User {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", phone='" + phone + '\'' +
-                ", image='" + image + '\'' +
+                ", avatar=" + Arrays.toString(avatar) +
                 '}';
     }
 }

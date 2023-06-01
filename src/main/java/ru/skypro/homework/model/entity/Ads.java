@@ -3,6 +3,7 @@ package ru.skypro.homework.model.entity;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "ads")
@@ -11,22 +12,25 @@ public class Ads {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer author;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     private String title;
 
-    private String image;
+    @OneToMany(mappedBy = "ads", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private Set<Image> image;
 
     private int price;
+
 
     public Ads() {
     }
 
-    public Ads(Integer id, Integer author, String title, String image, int price) {
+    public Ads(Integer id, User user, String title, int price) {
         this.id = id;
-        this.author = author;
+        this.user = user;
         this.title = title;
-        this.image = image;
         this.price = price;
     }
 
@@ -34,8 +38,8 @@ public class Ads {
         return id;
     }
 
-    public Integer getAuthor() {
-        return author;
+    public User getUser() {
+        return user;
     }
 
     public String getTitle() {
@@ -46,8 +50,8 @@ public class Ads {
         return price;
     }
 
-    public String getImage() {
-        return image;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
@@ -55,21 +59,20 @@ public class Ads {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Ads ads = (Ads) o;
-        return price == ads.price && Objects.equals(id, ads.id) && Objects.equals(author, ads.author) && Objects.equals(title, ads.title) && Objects.equals(image, ads.image);
+        return price == ads.price && Objects.equals(id, ads.id) && Objects.equals(user, ads.user) && Objects.equals(title, ads.title) && Objects.equals(image, ads.image);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, author, title, image, price);
+        return Objects.hash(id, user, title, image, price);
     }
 
     @Override
     public String toString() {
         return "Ads{" +
                 "id=" + id +
-                ", author=" + author +
+                ", user=" + user +
                 ", title='" + title + '\'' +
-                ", image='" + image + '\'' +
                 ", price=" + price +
                 '}';
     }

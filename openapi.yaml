@@ -28,7 +28,7 @@ paths:
       tags:
         - Пользователи
       summary: 'Получить информацию об авторизованном пользователе'
-      operationId: getAuthor
+      operationId: getUser
       responses:
         '200':
           content:

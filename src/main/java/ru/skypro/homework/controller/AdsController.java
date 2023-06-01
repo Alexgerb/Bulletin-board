@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.model.dto.CreateAds;
 import ru.skypro.homework.model.dto.ResponseWrapperAds;
 import ru.skypro.homework.model.entity.Ads;
 
@@ -23,7 +24,7 @@ public class AdsController {
     }
 
     @PostMapping()
-    public ResponseEntity<Ads> addAds() {
+    public ResponseEntity<Ads> addAds(@RequestBody CreateAds createAds) {
         return ResponseEntity.status(200).build();
     }
 
@@ -38,12 +39,13 @@ public class AdsController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseWrapperAds> updateAds(@PathVariable("id") Integer id) {
+    public ResponseEntity<ResponseWrapperAds> updateAds(@PathVariable("id") Integer id,
+                                                        @RequestBody ResponseWrapperAds responseWrapperAds) {
         return ResponseEntity.status(200).build();
     }
 
     @GetMapping("/me")
-    public ResponseEntity<ResponseWrapperAds> getAdsMe() {
+    public ResponseEntity<ResponseWrapperAds> getAdsMe(@RequestBody ResponseWrapperAds responseWrapperAds) {
         return ResponseEntity.status(200).build();
     }
 
