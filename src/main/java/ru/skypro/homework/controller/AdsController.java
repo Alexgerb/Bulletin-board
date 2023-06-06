@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.model.dto.CreateAds;
+import ru.skypro.homework.model.dto.FullAds;
 import ru.skypro.homework.model.dto.ResponseWrapperAds;
 import ru.skypro.homework.model.entity.Ads;
 
@@ -23,13 +24,14 @@ public class AdsController {
         return ResponseEntity.status(200).build();
     }
 
-    @PostMapping()
-    public ResponseEntity<Ads> addAds(@RequestBody CreateAds createAds) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Ads> addAds(@RequestPart CreateAds createAds,
+                                      @RequestPart MultipartFile image) {
         return ResponseEntity.status(200).build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapperAds> getAds(@PathVariable("id") Integer id) {
+    public ResponseEntity<FullAds> getAds(@PathVariable("id") Integer id) {
         return ResponseEntity.status(200).build();
     }
 
@@ -39,18 +41,18 @@ public class AdsController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseWrapperAds> updateAds(@PathVariable("id") Integer id,
-                                                        @RequestBody ResponseWrapperAds responseWrapperAds) {
+    public ResponseEntity<Ads> updateAds(@PathVariable("id") Integer id,
+                                         @RequestBody CreateAds createAds) {
         return ResponseEntity.status(200).build();
     }
 
     @GetMapping("/me")
-    public ResponseEntity<ResponseWrapperAds> getAdsMe(@RequestBody ResponseWrapperAds responseWrapperAds) {
+    public ResponseEntity<ResponseWrapperAds> getAdsMe() {
         return ResponseEntity.status(200).build();
     }
 
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<byte[]> updateAdsImage(@PathVariable Integer id,@RequestParam MultipartFile image) throws IOException {
+    public ResponseEntity<byte[]> updateAdsImage(@PathVariable("id") Integer id,@RequestPart MultipartFile image) throws IOException {
         return ResponseEntity.status(200).build();
     }
 

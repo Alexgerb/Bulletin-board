@@ -18,11 +18,11 @@ public class Ads {
 
     private String title;
 
-    @OneToMany(mappedBy = "ads", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private Set<Image> image;
+    @OneToOne
+    @JoinColumn(name = "image_id")
+    private Image image;
 
-    private int price;
-
+    private Integer price;
 
     public Ads() {
     }
@@ -52,6 +52,14 @@ public class Ads {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
     }
 
     @Override

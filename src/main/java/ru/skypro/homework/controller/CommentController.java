@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.skypro.homework.model.dto.CommentDto;
+import ru.skypro.homework.model.dto.CreateComment;
 import ru.skypro.homework.model.dto.ResponseWrapperComment;
 import ru.skypro.homework.model.entity.Comment;
 
@@ -19,7 +21,8 @@ public class CommentController {
     }
 
     @PostMapping("/{id}/comments")
-    public ResponseEntity<Comment> addComment (@RequestBody Comment comment) {
+    public ResponseEntity<CreateComment> addComment (@PathVariable("id") Integer id,
+                                                     @RequestBody CreateComment comment) {
         return ResponseEntity.status(200).build();
     }
 
@@ -30,9 +33,9 @@ public class CommentController {
     }
 
     @PatchMapping("/{adId}/comments/{commentId}")
-    public ResponseEntity<Comment> updateComments(@PathVariable("adId") Integer adId,
-                                                  @PathVariable("commentId") Integer commentId,
-                                                  @RequestBody Comment comment) {
+    public ResponseEntity<CommentDto> updateComments(@PathVariable("adId") Integer adId,
+                                                     @PathVariable("commentId") Integer commentId,
+                                                     @RequestBody CommentDto commentDto) {
         return ResponseEntity.status(200).build();
     }
 

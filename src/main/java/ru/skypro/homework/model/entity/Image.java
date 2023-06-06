@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
-@Table(name = "image")
+@Table(name = "images")
 public class Image {
     @Id
     @GeneratedValue
@@ -17,11 +17,6 @@ public class Image {
 
     @Lob
     private byte[] data;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Ads ads;
-
-
 
     public Image() {
     }
@@ -39,14 +34,6 @@ public class Image {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Ads getAds() {
-        return ads;
-    }
-
-    public void setAds(Ads ads) {
-        this.ads = ads;
     }
 
     public String getFilePath() {

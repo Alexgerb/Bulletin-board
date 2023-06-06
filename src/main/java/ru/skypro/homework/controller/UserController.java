@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.model.dto.NewPassword;
+import ru.skypro.homework.model.dto.UserDto;
 import ru.skypro.homework.model.entity.User;
 import ru.skypro.homework.service.UserService;
 
@@ -29,19 +30,19 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<User> getMe(@RequestBody User user) {
+    public ResponseEntity<UserDto> getMe() {
         return ResponseEntity.status(200).build();
     }
 
     @PatchMapping("/me")
-    public ResponseEntity<User> patchMe(@RequestBody User user) {
+    public ResponseEntity<User> patchMe(@RequestBody UserDto userDto) {
 
 
         return ResponseEntity.status(200).build();
     }
 
     @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> updateUserImage(@RequestParam MultipartFile image) throws IOException {
+    public ResponseEntity<String> updateUserImage(@RequestPart MultipartFile image) throws IOException {
         return ResponseEntity.status(200).build();
     }
 

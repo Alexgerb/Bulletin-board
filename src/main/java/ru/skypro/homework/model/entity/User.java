@@ -1,7 +1,6 @@
 package ru.skypro.homework.model.entity;
 
 import javax.persistence.*;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 
@@ -13,6 +12,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private String login;
+
+    private String password;
+
     private String email;
 
     private String firstName;
@@ -21,8 +24,10 @@ public class User {
 
     private String phone;
 
-    @Lob
-    private byte[] avatar;  //image
+    @OneToOne
+    @JoinColumn(name = "avatar_id")
+    private Image avatar;
+
 
     @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     private Set<Ads> ads;
@@ -31,7 +36,8 @@ public class User {
     public User() {
     }
 
-    public User(String email, String firstName, String lastName, String phone) {
+    public User(String login, String email, String firstName, String lastName, String phone) {
+        this.login = login;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -58,22 +64,32 @@ public class User {
         return phone;
     }
 
-    public byte[] getAvatar() {
-        return avatar;
-    }
-
     public Set<Ads> getAds() {
         return ads;
     }
 
+    public void setAds(Set<Ads> ads) {
+        this.ads = ads;
+    }
 
+    public Image getAvatar() {
+        return avatar;
+    }
 
-    public void setAvatar(byte[] avatar) {
+    public void setAvatar(Image avatar) {
         this.avatar = avatar;
     }
 
-    public void setAds(Set<Ads> ads) {
-        this.ads = ads;
+    public String getLogin() {
+        return login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 
@@ -82,25 +98,26 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(email, user.email) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(phone, user.phone) && Arrays.equals(avatar, user.avatar) && Objects.equals(ads, user.ads);
+        return Objects.equals(id, user.id) && Objects.equals(login, user.login) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(phone, user.phone) && Objects.equals(avatar, user.avatar) && Objects.equals(ads, user.ads);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, email, firstName, lastName, phone, ads);
-        result = 31 * result + Arrays.hashCode(avatar);
-        return result;
+        return Objects.hash(id, login, password, email, firstName, lastName, phone, avatar, ads);
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", phone='" + phone + '\'' +
-                ", avatar=" + Arrays.toString(avatar) +
+                ", avatar=" + avatar +
+                ", ads=" + ads +
                 '}';
     }
 }
