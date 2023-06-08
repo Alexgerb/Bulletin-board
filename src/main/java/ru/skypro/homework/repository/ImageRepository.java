@@ -2,8 +2,9 @@ package ru.skypro.homework.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.skypro.homework.model.entity.User;
+import ru.skypro.homework.model.entity.Image;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface ImageRepository extends JpaRepository<Image, Integer> {
+
 }

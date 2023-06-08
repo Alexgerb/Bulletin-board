@@ -13,7 +13,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User author;
+    private UserProfile author;
 
     private LocalDateTime createdAt;
 
@@ -22,7 +22,7 @@ public class Comment {
     public Comment() {
     }
 
-    public Comment(User author, LocalDateTime createdAt, String text) {
+    public Comment(UserProfile author, LocalDateTime createdAt, String text) {
         this.author = author;
         this.createdAt = createdAt;
         this.text = text;
@@ -32,7 +32,7 @@ public class Comment {
         return id;
     }
 
-    public User getAuthor() {
+    public UserProfile getAuthor() {
         return author;
     }
 

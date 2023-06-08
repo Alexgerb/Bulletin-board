@@ -3,7 +3,6 @@ package ru.skypro.homework.model.entity;
 
 import javax.persistence.*;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "ads")
@@ -14,7 +13,7 @@ public class Ads {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserProfile userProfile;
 
     private String title;
 
@@ -27,9 +26,9 @@ public class Ads {
     public Ads() {
     }
 
-    public Ads(Integer id, User user, String title, int price) {
+    public Ads(Integer id, UserProfile userProfile, String title, int price) {
         this.id = id;
-        this.user = user;
+        this.userProfile = userProfile;
         this.title = title;
         this.price = price;
     }
@@ -38,8 +37,8 @@ public class Ads {
         return id;
     }
 
-    public User getUser() {
-        return user;
+    public UserProfile getUser() {
+        return userProfile;
     }
 
     public String getTitle() {
@@ -50,8 +49,8 @@ public class Ads {
         return price;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(UserProfile userProfile) {
+        this.userProfile = userProfile;
     }
 
     public Image getImage() {
@@ -67,19 +66,19 @@ public class Ads {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Ads ads = (Ads) o;
-        return price == ads.price && Objects.equals(id, ads.id) && Objects.equals(user, ads.user) && Objects.equals(title, ads.title) && Objects.equals(image, ads.image);
+        return price == ads.price && Objects.equals(id, ads.id) && Objects.equals(userProfile, ads.userProfile) && Objects.equals(title, ads.title) && Objects.equals(image, ads.image);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, title, image, price);
+        return Objects.hash(id, userProfile, title, image, price);
     }
 
     @Override
     public String toString() {
         return "Ads{" +
                 "id=" + id +
-                ", user=" + user +
+                ", user=" + userProfile +
                 ", title='" + title + '\'' +
                 ", price=" + price +
                 '}';

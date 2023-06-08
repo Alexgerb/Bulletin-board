@@ -1,12 +1,14 @@
 package ru.skypro.homework.model.entity;
 
+import ru.skypro.homework.model.dto.Role;
+
 import javax.persistence.*;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class UserProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,24 +26,30 @@ public class User {
 
     private String phone;
 
+    private Role role;
+
     @OneToOne
     @JoinColumn(name = "avatar_id")
     private Image avatar;
 
 
-    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "userProfile",fetch = FetchType.LAZY)
     private Set<Ads> ads;
 
 
-    public User() {
+    public UserProfile() {
     }
 
-    public User(String login, String email, String firstName, String lastName, String phone) {
+
+
+    public UserProfile(String login, String email, String firstName, String lastName, String phone, Role role, String password) {
         this.login = login;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
+        this.role = role;
+        this.password = password;
     }
 
     public Integer getId() {
@@ -92,23 +100,30 @@ public class User {
         this.password = password;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(login, user.login) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(phone, user.phone) && Objects.equals(avatar, user.avatar) && Objects.equals(ads, user.ads);
+        UserProfile that = (UserProfile) o;
+        return Objects.equals(id, that.id) && Objects.equals(login, that.login) && Objects.equals(password, that.password) && Objects.equals(email, that.email) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(phone, that.phone) && role == that.role && Objects.equals(avatar, that.avatar) && Objects.equals(ads, that.ads);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, login, password, email, firstName, lastName, phone, avatar, ads);
+        return Objects.hash(id, login, password, email, firstName, lastName, phone, role, avatar, ads);
     }
 
     @Override
     public String toString() {
-        return "User{" +
+        return "UserProfile{" +
                 "id=" + id +
                 ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
@@ -116,6 +131,7 @@ public class User {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", phone='" + phone + '\'' +
+                ", role=" + role +
                 ", avatar=" + avatar +
                 ", ads=" + ads +
                 '}';
