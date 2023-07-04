@@ -46,8 +46,8 @@ public class ImageServiceImpl implements ImageService {
         try (
                 InputStream is = imageFile.getInputStream();
                 OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
-                BufferedInputStream bis = new BufferedInputStream(is, 2048);
-                BufferedOutputStream bos = new BufferedOutputStream(os, 2048);
+                BufferedInputStream bis = new BufferedInputStream(is);
+                BufferedOutputStream bos = new BufferedOutputStream(os);
         ) {
             bis.transferTo(bos);
         }
@@ -90,11 +90,6 @@ public class ImageServiceImpl implements ImageService {
     public Image findImage(Integer id) {
         return imageRepository.findImageById(id);
 
-    }
-
-    @Override
-    public List<Object> findAll() {
-        return null;
     }
 
 }

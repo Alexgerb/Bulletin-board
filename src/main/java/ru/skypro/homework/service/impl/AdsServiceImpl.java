@@ -11,7 +11,6 @@ import ru.skypro.homework.model.entity.Ads;
 import ru.skypro.homework.model.entity.Image;
 import ru.skypro.homework.model.entity.UserProfile;
 import ru.skypro.homework.repository.AdsRepository;
-import ru.skypro.homework.repository.UserProfileRepository;
 import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.ImageService;
 import ru.skypro.homework.service.UserService;
@@ -131,6 +130,13 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     public Void getAdsImage(Integer id, MultipartFile image) {
+        Ads ads = adsRepository.findById(id).orElseThrow();
+        try {
+            imageService.uploadImage(ads, image);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         return null;
     }
 

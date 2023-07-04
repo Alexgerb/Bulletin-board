@@ -5,7 +5,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.model.dto.RegisterReq;
-import ru.skypro.homework.model.dto.RoleEnum;
 import ru.skypro.homework.model.entity.Role;
 import ru.skypro.homework.repository.RoleRepository;
 import ru.skypro.homework.security.JpaUserDetailsService;

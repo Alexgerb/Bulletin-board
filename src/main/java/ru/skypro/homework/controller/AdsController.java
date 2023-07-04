@@ -70,7 +70,7 @@ public class AdsController {
         return ResponseEntity.ok(adsService.getAdsMe(myUserDetailsService.getUsername()));
     }
 
-    @PatchMapping(value = "/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateAdsImage(@PathVariable("id") Integer id,@RequestPart MultipartFile image) throws IOException {
         return ResponseEntity.ok(adsService.getAdsImage(id, image));
     }
@@ -79,7 +79,6 @@ public class AdsController {
     @GetMapping("/image/{id}")
     public void getMeImage(@PathVariable("id") Integer id,
                            HttpServletResponse response)throws IOException {
-        //Ads ads = adsService.getAdsById(id);
         Image image = imageService.findImage(id);
         Path path = Path.of(image.getFilePath());
         try (InputStream is = Files.newInputStream(path);

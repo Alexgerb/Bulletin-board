@@ -49,9 +49,7 @@ public class UserController {
     @GetMapping("/{id}/getAvatar")
     public void getMeImage(@PathVariable("id") Integer id,
                            HttpServletResponse response)throws IOException {
-        //UserProfile userProfile = userService.getUserProfile(myUserDetailsService.getUsername());
         UserProfile userProfile = userService.getUserById(id);
-        System.out.println(myUserDetailsService.getUsername());
         Path path = Path.of(userProfile.getAvatar().getFilePath());
             try (InputStream is = Files.newInputStream(path);
                  OutputStream os = response.getOutputStream()) {

@@ -12,7 +12,5 @@ public interface ImageService {
 
     Image findImage(Integer id);
 
-    List<Object> findAll();
-
 
 }
