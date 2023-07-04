@@ -1,7 +1,8 @@
 package ru.skypro.homework.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,21 +12,30 @@ import ru.skypro.homework.model.dto.CreateAds;
 import ru.skypro.homework.model.dto.FullAds;
 import ru.skypro.homework.model.dto.ResponseWrapperAds;
 import ru.skypro.homework.model.entity.Ads;
+import ru.skypro.homework.model.entity.Image;
+import ru.skypro.homework.model.entity.UserProfile;
+import ru.skypro.homework.security.MyUserDetailsService;
 import ru.skypro.homework.service.AdsService;
+import ru.skypro.homework.service.ImageService;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
-@RequestMapping("ads")
+@RequestMapping("/ads")
+@RequiredArgsConstructor
 public class AdsController {
 
     private final AdsService adsService;
+    private final MyUserDetailsService myUserDetailsService;
+    private final ImageService imageService;
 
-    public AdsController(AdsService adsService) {
-        this.adsService = adsService;
-    }
 
     @GetMapping()
     public ResponseEntity<ResponseWrapperAds> getAllAds() {
@@ -35,12 +45,12 @@ public class AdsController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AdsDto> addAds(@RequestPart CreateAds properties,
                                          @RequestPart MultipartFile image) {
-        return ResponseEntity.ok(adsService.addAds(properties, image));
+        return ResponseEntity.ok(adsService.addAds(properties, image, myUserDetailsService.getUsername()));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<FullAds> getAds(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(adsService.getAds(id));
+        return ResponseEntity.ok(adsService.getAds(Integer.valueOf(id)));
     }
 
     @DeleteMapping("/{id}")
@@ -56,13 +66,32 @@ public class AdsController {
 
     @GetMapping("/me")
     public ResponseEntity<ResponseWrapperAds> getAdsMe() {
-        return ResponseEntity.ok(adsService.getAdsMe());
+        return ResponseEntity.ok(adsService.getAdsMe(myUserDetailsService.getUsername()));
     }
 
-    @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateAdsImage(@PathVariable("id") Integer id,@RequestPart MultipartFile image) throws IOException {
-        return ResponseEntity.ok(adsService.updateAdsImage(id, image));
+        return ResponseEntity.ok(adsService.getAdsImage(id, image));
     }
+
+
+    @GetMapping("/image/{id}")
+    public void getMeImage(@PathVariable("id") Integer id,
+                           HttpServletResponse response)throws IOException {
+        //Ads ads = adsService.getAdsById(id);
+        Image image = imageService.findImage(id);
+        Path path = Path.of(image.getFilePath());
+        try (InputStream is = Files.newInputStream(path);
+             OutputStream os = response.getOutputStream()) {
+            response.setStatus(200);
+            response.setContentType(image.getMediaType());
+            response.setContentLength((int) image.getFileSize());
+            is.transferTo(os);
+        }
+
+    }
+
+
 
 
 

@@ -5,9 +5,9 @@ import ru.skypro.homework.model.dto.CreateComment;
 import ru.skypro.homework.model.dto.ResponseWrapperComment;
 
 public interface CommentService {
-    ResponseWrapperComment getAllComment();
+    ResponseWrapperComment getAllComment(Integer id);
 
-    CreateComment addComment(Integer id, CreateComment comment);
+    CommentDto addComment(Integer id, CreateComment comment);
 
     void deleteComment(Integer adId, Integer commentId);
 

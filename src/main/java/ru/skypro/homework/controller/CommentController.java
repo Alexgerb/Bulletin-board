@@ -1,5 +1,6 @@
 package ru.skypro.homework.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,22 +13,19 @@ import ru.skypro.homework.service.CommentService;
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
-@RequestMapping("ads")
+@RequestMapping("/ads")
+@RequiredArgsConstructor
 public class CommentController {
 
     private final CommentService commentService;
 
-    public CommentController(CommentService commentService) {
-        this.commentService = commentService;
-    }
-
     @GetMapping("/{id}/comments")
     public ResponseEntity<ResponseWrapperComment> getAllComment (@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(commentService.getAllComment());
+        return ResponseEntity.ok(commentService.getAllComment(id));
     }
 
     @PostMapping("/{id}/comments")
-    public ResponseEntity<CreateComment> addComment (@PathVariable("id") Integer id,
+    public ResponseEntity<CommentDto> addComment (@PathVariable("id") Integer id,
                                                      @RequestBody CreateComment comment) {
         return ResponseEntity.ok(commentService.addComment(id, comment));
     }

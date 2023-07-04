@@ -9,10 +9,14 @@ import java.util.Objects;
 public class Image {
     @Id
     @GeneratedValue
-    private Long id;
+    private Integer id;
+
+    private String name;
 
     private String filePath;
+
     private long fileSize;
+
     private String mediaType;
 
     @Lob
@@ -21,18 +25,28 @@ public class Image {
     public Image() {
     }
 
-    public Image(Long id, String filePath, long fileSize, String mediaType, byte[] data) {
+    public Image(Integer id, String name, String filePath, long fileSize, String mediaType, byte[] data) {
         this.id = id;
+        this.name = name;
         this.filePath = filePath;
         this.fileSize = fileSize;
         this.mediaType = mediaType;
         this.data = data;
     }
-    public Long getId() {
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -68,19 +82,17 @@ public class Image {
         this.data = data;
     }
 
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Image image = (Image) o;
-        return fileSize == image.fileSize && Objects.equals(id, image.id) && Objects.equals(filePath, image.filePath) && Objects.equals(mediaType, image.mediaType) && Arrays.equals(data, image.data);
+        return fileSize == image.fileSize && Objects.equals(id, image.id) && Objects.equals(name, image.name) && Objects.equals(filePath, image.filePath) && Objects.equals(mediaType, image.mediaType) && Arrays.equals(data, image.data);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, filePath, fileSize, mediaType);
+        int result = Objects.hash(id, name, filePath, fileSize, mediaType);
         result = 31 * result + Arrays.hashCode(data);
         return result;
     }
@@ -89,12 +101,11 @@ public class Image {
     public String toString() {
         return "Image{" +
                 "id=" + id +
+                ", name='" + name + '\'' +
                 ", filePath='" + filePath + '\'' +
                 ", fileSize=" + fileSize +
                 ", mediaType='" + mediaType + '\'' +
                 ", data=" + Arrays.toString(data) +
                 '}';
     }
-
-
 }

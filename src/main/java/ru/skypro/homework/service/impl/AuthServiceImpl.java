@@ -1,79 +1,60 @@
 package ru.skypro.homework.service.impl;
 
-import org.springframework.security.core.userdetails.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.model.dto.RegisterReq;
-import ru.skypro.homework.model.dto.Role;
-import ru.skypro.homework.model.entity.UserProfile;
-import ru.skypro.homework.repository.UserProfileRepository;
+import ru.skypro.homework.model.dto.RoleEnum;
+import ru.skypro.homework.model.entity.Role;
+import ru.skypro.homework.repository.RoleRepository;
+import ru.skypro.homework.security.JpaUserDetailsService;
+import ru.skypro.homework.security.MyUserDetailsService;
 import ru.skypro.homework.service.AuthService;
 
+import java.util.HashSet;
+import java.util.List;
+
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-  private final UserDetailsManager manager;
+  private final JpaUserDetailsService manager;
 
   private final PasswordEncoder encoder;
-  private final UserProfileRepository userProfileRepository;
 
-  public AuthServiceImpl(UserDetailsManager manager, PasswordEncoder passwordEncoder,
-                         UserProfileRepository userProfileRepository) {
-    this.manager = manager;
-    this.encoder = passwordEncoder;
-    this.userProfileRepository = userProfileRepository;
-  }
+  private final RoleRepository roleRepository;
+
+  private final MyUserDetailsService myUserDetailsService;
 
   @Override
   public boolean login(String userName, String password) {
-    if (!manager.userExists(userName)) {
+    UserDetails userDetails = manager.loadUserByUsername(userName);
+    if (userDetails == null) {
       return false;
     }
-    UserDetails userDetails = manager.loadUserByUsername(userName);
     return encoder.matches(password, userDetails.getPassword());
   }
 
   @Override
-  public boolean register(RegisterReq registerReq, Role role) {
-
-    UserProfile userProfile = createUser(registerReq, role);
-
+  public boolean register(RegisterReq registerReq, String role) {
     if (manager.userExists(registerReq.getUsername())) {
       return false;
     }
+    Role role1 = roleRepository.findByName(role);
+    if (role1 == null) {
+      Role newRole = new Role(role);
+      roleRepository.save(newRole);
+      role1 = newRole;
+    }
 
-    saveUserProfile(userProfile);
 
+    myUserDetailsService.setPassword(encoder.encode(registerReq.getPassword()));
+    myUserDetailsService.setUsername(registerReq.getUsername());
+    myUserDetailsService.setRoles(new HashSet<>(List.of(role1)));
+    manager.createUser(myUserDetailsService);
 
-    manager.createUser(
-        User.builder()
-            .passwordEncoder(this.encoder::encode)
-            .password(registerReq.getPassword())
-            .username(registerReq.getUsername())
-            .roles(role.name())
-            .build());
-     return true;
+    return true;
   }
-
-  private UserProfile createUser(RegisterReq registerReq, Role role) {
-    UserProfile userProfile = new UserProfile(
-            registerReq.getUsername(),
-            registerReq.getUsername(),
-            registerReq.getFirstName(),
-            registerReq.getLastName(),
-            registerReq.getPhone(),
-            role,
-            registerReq.getPassword()
-    );
-    return userProfile;
-  }
-
-  private void saveUserProfile(UserProfile userProfile) {
-    userProfileRepository.save(userProfile);
-  }
-
-
 
 }

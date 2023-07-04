@@ -2,10 +2,9 @@ package ru.skypro.homework.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.skypro.homework.model.entity.Image;
+import ru.skypro.homework.model.entity.Role;
 
 @Repository
-public interface ImageRepository extends JpaRepository<Image, Integer> {
-
-    Image findImageById(Integer id);
+public interface RoleRepository extends JpaRepository<Role, Long> {
+    Role findByName(String toString);
 }

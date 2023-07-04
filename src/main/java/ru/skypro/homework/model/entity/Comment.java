@@ -11,20 +11,25 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private UserProfile author;
+    private UserProfile userProfile;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ads_id")
+    private Ads ads;
 
     private LocalDateTime createdAt;
 
     private String text;
 
     public Comment() {
+        this.createdAt = LocalDateTime.now();
     }
 
-    public Comment(UserProfile author, LocalDateTime createdAt, String text) {
-        this.author = author;
-        this.createdAt = createdAt;
+    public Comment(UserProfile author, String text) {
+        this.userProfile = author;
+        this.createdAt = LocalDateTime.now();
         this.text = text;
     }
 
@@ -32,8 +37,16 @@ public class Comment {
         return id;
     }
 
-    public UserProfile getAuthor() {
-        return author;
+    public UserProfile getUserProfile() {
+        return userProfile;
+    }
+
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
+    }
+
+    public void setAds(Ads ads) {
+        this.ads = ads;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -42,10 +55,6 @@ public class Comment {
 
     public String getText() {
         return text;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 
     public void setText(String text) {
@@ -57,19 +66,18 @@ public class Comment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Comment comment = (Comment) o;
-        return Objects.equals(id, comment.id) && Objects.equals(author, comment.author) && Objects.equals(createdAt, comment.createdAt) && Objects.equals(text, comment.text);
+        return Objects.equals(id, comment.id) && Objects.equals(createdAt, comment.createdAt) && Objects.equals(text, comment.text);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, author, createdAt, text);
+        return Objects.hash(id, createdAt, text);
     }
 
     @Override
     public String toString() {
         return "Comment{" +
                 "id=" + id +
-                ", author=" + author +
                 ", createdAt=" + createdAt +
                 ", text='" + text + '\'' +
                 '}';
