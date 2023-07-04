@@ -97,12 +97,19 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     public Void deleteAds(Integer id) {
+        Ads ads = adsRepository.findById(id).orElseThrow();
+        adsRepository.delete(ads);
         return null;
     }
 
     @Override
     public AdsDto updateAds(Integer id, CreateAds createAds) {
-        return null;
+        Ads ads = adsRepository.findById(id).orElseThrow();
+        ads.setDescription(createAds.getDescription());
+        ads.setTitle(createAds.getTitle());
+        ads.setPrice(createAds.getPrice());
+        saveAds(ads);
+        return adsMapping(ads);
     }
 
     @Override
@@ -129,6 +136,6 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     public Ads getAdsById(Integer id) {
-        return adsRepository.findById(id).orElse(new Ads());
+        return adsRepository.findById(id).orElseThrow();
     }
 }

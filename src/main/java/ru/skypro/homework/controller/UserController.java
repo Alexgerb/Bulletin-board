@@ -2,7 +2,6 @@ package ru.skypro.homework.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.model.dto.NewPassword;
 import ru.skypro.homework.model.dto.UserDto;
-import ru.skypro.homework.model.entity.Image;
 import ru.skypro.homework.model.entity.UserProfile;
 import ru.skypro.homework.security.MyUserDetailsService;
 import ru.skypro.homework.service.UserService;
@@ -48,9 +46,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getMe(myUserDetailsService.getUsername()));
     }
 
-    @GetMapping("/me/getAvatar")
-    public void getMeImage(HttpServletResponse response)throws IOException {
-        UserProfile userProfile = userService.getUserProfile(myUserDetailsService.getUsername());
+    @GetMapping("/{id}/getAvatar")
+    public void getMeImage(@PathVariable("id") Integer id,
+                           HttpServletResponse response)throws IOException {
+        //UserProfile userProfile = userService.getUserProfile(myUserDetailsService.getUsername());
+        UserProfile userProfile = userService.getUserById(id);
         System.out.println(myUserDetailsService.getUsername());
         Path path = Path.of(userProfile.getAvatar().getFilePath());
             try (InputStream is = Files.newInputStream(path);

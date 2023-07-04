@@ -50,12 +50,13 @@ public class AdsController {
 
     @GetMapping("/{id}")
     public ResponseEntity<FullAds> getAds(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(adsService.getAds(Integer.valueOf(id)));
+        return ResponseEntity.ok(adsService.getAds(id));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAds(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(adsService.deleteAds(id));
+        adsService.deleteAds(id);
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{id}")

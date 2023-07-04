@@ -25,7 +25,7 @@ public class Ads {
     @JoinColumn(name = "image_id")
     private Image image;
 
-    @OneToMany(mappedBy = "ads",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "ads",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Comment> comments;
 
 

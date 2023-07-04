@@ -72,11 +72,11 @@ public class CommentServiceImpl implements CommentService {
         commentDto.setPk(comment.getId());
 
         ZoneId zoneId = ZoneId.systemDefault();
-        long epoch = comment.getCreatedAt().atZone(zoneId).toEpochSecond();
+        long epoch = comment.getCreatedAt().atZone(zoneId).toInstant().toEpochMilli();
 
         commentDto.setCreatedAt(epoch); //дата время
         commentDto.setAuthor(comment.getUserProfile().getId());
-        commentDto.setAuthorImage("/users/me/getAvatar");
+        commentDto.setAuthorImage("/users/"+comment.getUserProfile().getId()+"/getAvatar");
         commentDto.setAuthorFirstName(comment.getUserProfile().getFirstName());
 
         return commentDto;

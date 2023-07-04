@@ -35,8 +35,7 @@ public class WebSecurityConfig {
           "/register",
           "/ads/image/*",
           "/ads/*",
-          "/ads",
-          "users/me/getAvatar"
+          "/ads"
 
   };
 
@@ -79,7 +78,8 @@ public class WebSecurityConfig {
                                     "/ads/*",
                                     "ads/image/*",
                                     "/users/image/*",
-                                    "ads/*/comments"
+                                    "ads/*/comments",
+                                    "users/*/getAvatar"
                             ).permitAll()
                             .antMatchers("/ads/**", "/users/**").authenticated()
             )

@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
         userDto.setPhone(userProfile.getPhone());
         userDto.setFirstName(userProfile.getFirstName());
         userDto.setLastName(userProfile.getLastName());
-        userDto.setImage("/users/me/getAvatar");
+        userDto.setImage("/users/"+userProfile.getId()+"/getAvatar");
         return userDto;
     }
 
@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserProfile getUserById(Integer id) {
-        return userProfileRepository.findById(id).orElse(new UserProfile());
+        return userProfileRepository.findById(id).orElseThrow();
     }
 
 
