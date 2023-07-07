@@ -20,7 +20,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
-    private final UserService userService;
     private final AdsService adsService;
     private final CommentRepository commentRepository;
 
@@ -58,12 +57,15 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteComment(Integer adId, Integer commentId) {
-
+        Comment comment = commentRepository.findById(commentId).orElseThrow();
+        commentRepository.delete(comment);
     }
 
     @Override
     public CommentDto updateComment(Integer adId, Integer commentId, CommentDto commentDto) {
-        return null;
+        Comment comment = commentRepository.findById(commentId).orElseThrow();
+        comment.setText(commentDto.getText());
+        return mappingComment(comment);
     }
 
     private CommentDto mappingComment(Comment comment) {

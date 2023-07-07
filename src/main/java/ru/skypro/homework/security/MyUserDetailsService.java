@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
+import ru.skypro.homework.model.dto.RoleEnum;
 import ru.skypro.homework.model.entity.Role;
 
 import java.util.Collection;
@@ -14,16 +15,17 @@ import java.util.Set;
 @RequestScope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class MyUserDetailsService implements UserDetails {
 
+    private String firstName;
+
+    private String lastName;
+
+    private String phone;
+
     private String username;
 
     private String password;
 
     private Set<Role> roles;
-
-    public MyUserDetailsService() {
-    }
-
-
 
     public Set<Role> getRoles() {
         return roles;
@@ -39,6 +41,30 @@ public class MyUserDetailsService implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     @Override

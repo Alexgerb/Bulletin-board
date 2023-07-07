@@ -15,13 +15,13 @@ public interface AdsService {
 
     FullAds getAds(Integer id);
 
-    Void deleteAds(Integer id);
+    void deleteAds(Integer id);
 
     AdsDto updateAds(Integer id, CreateAds createAds);
 
     ResponseWrapperAds getAdsMe(String username);
 
-    Void getAdsImage(Integer id, MultipartFile image);
+    void getAdsImage(Integer id, MultipartFile image);
 
     Ads getAdsById(Integer id);
 }

@@ -32,6 +32,11 @@ public class ImageServiceImpl implements ImageService {
     @Value("${path.to.images.folder}")
     private String imagesDir;
 
+    @Value("${path.to.default.folder}")
+    private String defaultDir;
+
+
+
     private final ImageRepository imageRepository;
     private final UserProfileRepository userProfileRepository;
     private final AdsRepository adsRepository;
@@ -54,9 +59,6 @@ public class ImageServiceImpl implements ImageService {
         Image image = new Image();
         image.setName(imageFile.getName());
         image.setFilePath(filePath.toString());
-        image.setFileSize(imageFile.getSize());
-        image.setMediaType(imageFile.getContentType());
-        image.setData(imageFile.getBytes());
         imageRepository.save(image);
         addImage(o, image);
 
@@ -90,6 +92,15 @@ public class ImageServiceImpl implements ImageService {
     public Image findImage(Integer id) {
         return imageRepository.findImageById(id);
 
+    }
+
+    @Override
+    public Image addDefaultAvatar() {
+        Image image = imageRepository.findImageByFilePath(defaultDir);
+        if (image == null) {
+            return imageRepository.save(new Image("default", defaultDir));
+        }
+        return image;
     }
 
 }

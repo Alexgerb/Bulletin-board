@@ -1,6 +1,8 @@
 package ru.skypro.homework.model.entity;
 
 
+import org.springframework.beans.factory.annotation.Value;
+
 import javax.persistence.*;
 import java.util.Objects;
 import java.util.Set;
@@ -46,6 +48,8 @@ public class UserProfile {
     @OneToMany(mappedBy = "userProfile",fetch = FetchType.LAZY)
     private Set<Comment> comments;
 
+    public UserProfile() {
+    }
 
     public UserProfile(String username, String password, Set<Role> roles) {
         this.username = username;
@@ -135,10 +139,9 @@ public class UserProfile {
         this.comments = comments;
     }
 
-    public UserProfile() {
-
+    public void setEmail(String email) {
+        this.email = email;
     }
-
 
     @Override
     public boolean equals(Object o) {

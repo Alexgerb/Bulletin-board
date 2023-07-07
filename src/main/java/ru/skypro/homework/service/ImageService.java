@@ -12,5 +12,5 @@ public interface ImageService {
 
     Image findImage(Integer id);
 
-
+    Image addDefaultAvatar();
 }

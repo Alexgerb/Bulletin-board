@@ -54,8 +54,6 @@ public class UserController {
             try (InputStream is = Files.newInputStream(path);
                  OutputStream os = response.getOutputStream()) {
                 response.setStatus(200);
-                response.setContentType(userProfile.getAvatar().getMediaType());
-                response.setContentLength((int) userProfile.getAvatar().getFileSize());
                 is.transferTo(os);
             }
 

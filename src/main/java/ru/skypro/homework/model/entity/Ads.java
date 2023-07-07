@@ -19,9 +19,11 @@ public class Ads {
     private UserProfile userProfile;
 
     private String title;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_id")
     private Image image;
 

@@ -8,13 +8,13 @@ import ru.skypro.homework.model.dto.CreateAds;
 import ru.skypro.homework.model.dto.FullAds;
 import ru.skypro.homework.model.dto.ResponseWrapperAds;
 import ru.skypro.homework.model.entity.Ads;
-import ru.skypro.homework.model.entity.Image;
 import ru.skypro.homework.model.entity.UserProfile;
 import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.ImageService;
 import ru.skypro.homework.service.UserService;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -95,10 +95,11 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public Void deleteAds(Integer id) {
+    public void deleteAds(Integer id) {
         Ads ads = adsRepository.findById(id).orElseThrow();
+        File image = new File(ads.getImage().getFilePath());
+        image.delete();
         adsRepository.delete(ads);
-        return null;
     }
 
     @Override
@@ -129,15 +130,13 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public Void getAdsImage(Integer id, MultipartFile image) {
+    public void getAdsImage(Integer id, MultipartFile image) {
         Ads ads = adsRepository.findById(id).orElseThrow();
         try {
             imageService.uploadImage(ads, image);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        return null;
     }
 
     @Override

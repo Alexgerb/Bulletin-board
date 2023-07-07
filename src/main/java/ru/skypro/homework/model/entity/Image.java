@@ -15,23 +15,13 @@ public class Image {
 
     private String filePath;
 
-    private long fileSize;
-
-    private String mediaType;
-
-    @Lob
-    private byte[] data;
 
     public Image() {
     }
 
-    public Image(Integer id, String name, String filePath, long fileSize, String mediaType, byte[] data) {
-        this.id = id;
+    public Image( String name, String filePath) {
         this.name = name;
         this.filePath = filePath;
-        this.fileSize = fileSize;
-        this.mediaType = mediaType;
-        this.data = data;
     }
 
     public String getName() {
@@ -58,43 +48,17 @@ public class Image {
         this.filePath = filePath;
     }
 
-    public long getFileSize() {
-        return fileSize;
-    }
-
-    public void setFileSize(long fileSize) {
-        this.fileSize = fileSize;
-    }
-
-    public String getMediaType() {
-        return mediaType;
-    }
-
-    public void setMediaType(String mediaType) {
-        this.mediaType = mediaType;
-    }
-
-    public byte[] getData() {
-        return data;
-    }
-
-    public void setData(byte[] data) {
-        this.data = data;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Image image = (Image) o;
-        return fileSize == image.fileSize && Objects.equals(id, image.id) && Objects.equals(name, image.name) && Objects.equals(filePath, image.filePath) && Objects.equals(mediaType, image.mediaType) && Arrays.equals(data, image.data);
+        return Objects.equals(id, image.id) && Objects.equals(name, image.name) && Objects.equals(filePath, image.filePath);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, name, filePath, fileSize, mediaType);
-        result = 31 * result + Arrays.hashCode(data);
-        return result;
+        return Objects.hash(id, name, filePath);
     }
 
     @Override
@@ -103,9 +67,6 @@ public class Image {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", filePath='" + filePath + '\'' +
-                ", fileSize=" + fileSize +
-                ", mediaType='" + mediaType + '\'' +
-                ", data=" + Arrays.toString(data) +
                 '}';
     }
 }

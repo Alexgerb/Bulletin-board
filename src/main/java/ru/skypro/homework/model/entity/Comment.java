@@ -21,6 +21,7 @@ public class Comment {
 
     private LocalDateTime createdAt;
 
+    @Column(columnDefinition = "TEXT")
     private String text;
 
     public Comment() {
@@ -60,6 +61,8 @@ public class Comment {
     public void setText(String text) {
         this.text = text;
     }
+
+
 
     @Override
     public boolean equals(Object o) {

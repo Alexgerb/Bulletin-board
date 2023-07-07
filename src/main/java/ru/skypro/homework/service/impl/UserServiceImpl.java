@@ -1,17 +1,20 @@
 package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.model.dto.NewPassword;
 import ru.skypro.homework.model.dto.UserDto;
+import ru.skypro.homework.model.entity.Image;
 import ru.skypro.homework.model.entity.UserProfile;
 import ru.skypro.homework.repository.UserProfileRepository;
 import ru.skypro.homework.security.JpaUserDetailsService;
 import ru.skypro.homework.service.UserService;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -21,9 +24,10 @@ import java.nio.file.attribute.UserPrincipalNotFoundException;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+
+
     private final UserProfileRepository userProfileRepository;
     private final PasswordEncoder encoder;
-    private final JpaUserDetailsService userDetailsService;
     private final ImageServiceImpl imageService;
 
 
@@ -76,7 +80,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String getAvatar(String username) {
         UserProfile userProfile = userProfileRepository.findByUsername(username);
-        String path = userProfile.getAvatar().getFilePath();
+        String path = userProfile.getAvatar().getFilePath();;
         return path;
     }
 
@@ -85,21 +89,6 @@ public class UserServiceImpl implements UserService {
         return userProfileRepository.findByUsername(username);
     }
 
-
-    @Override
-    public byte[] getImage(String username){
-        UserProfile userProfile = userProfileRepository.findByUsername(username);
-        return userProfile.getAvatar().getData();
-    }
-
-    @Override
-    public byte[] getImageByte(UserProfile userProfile) {
-        try {
-            return Files.readAllBytes(Paths.get(userProfile.getAvatar().getFilePath()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @Override
     public UserProfile getUserById(Integer id) {

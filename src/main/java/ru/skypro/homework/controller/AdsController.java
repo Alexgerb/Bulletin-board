@@ -72,7 +72,8 @@ public class AdsController {
 
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateAdsImage(@PathVariable("id") Integer id,@RequestPart MultipartFile image) throws IOException {
-        return ResponseEntity.ok(adsService.getAdsImage(id, image));
+        adsService.getAdsImage(id, image);
+        return ResponseEntity.ok().build();
     }
 
 
@@ -84,8 +85,6 @@ public class AdsController {
         try (InputStream is = Files.newInputStream(path);
              OutputStream os = response.getOutputStream()) {
             response.setStatus(200);
-            response.setContentType(image.getMediaType());
-            response.setContentLength((int) image.getFileSize());
             is.transferTo(os);
         }
 

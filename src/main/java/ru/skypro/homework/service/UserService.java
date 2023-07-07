@@ -14,7 +14,5 @@ public interface UserService {
     boolean changePassword(NewPassword newPassword, String username);
     String getAvatar(String username);
     UserProfile getUserProfile(String username);
-    byte[] getImage(String username);
-    byte[] getImageByte(UserProfile userProfile);
     UserProfile getUserById(Integer id);
 }

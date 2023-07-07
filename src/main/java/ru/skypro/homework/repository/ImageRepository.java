@@ -8,4 +8,6 @@ import ru.skypro.homework.model.entity.Image;
 public interface ImageRepository extends JpaRepository<Image, Integer> {
 
     Image findImageById(Integer id);
+
+    Image findImageByFilePath(String defaultDir);
 }

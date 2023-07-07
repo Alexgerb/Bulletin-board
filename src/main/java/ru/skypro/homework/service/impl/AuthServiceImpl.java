@@ -1,6 +1,7 @@
 package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
+
 
   private final JpaUserDetailsService manager;
 
@@ -40,20 +42,30 @@ public class AuthServiceImpl implements AuthService {
     if (manager.userExists(registerReq.getUsername())) {
       return false;
     }
+
+    Role newRole = checkRole(role);
+
+
+    myUserDetailsService.setPassword(encoder.encode(registerReq.getPassword()));
+    myUserDetailsService.setUsername(registerReq.getUsername());
+    myUserDetailsService.setRoles(new HashSet<>(List.of(newRole)));
+    myUserDetailsService.setPhone(registerReq.getPhone());
+    myUserDetailsService.setLastName(registerReq.getLastName());
+    myUserDetailsService.setFirstName(registerReq.getFirstName());
+    manager.createUser(myUserDetailsService);
+
+    return true;
+  }
+
+  private Role checkRole(String role) {
     Role role1 = roleRepository.findByName(role);
     if (role1 == null) {
       Role newRole = new Role(role);
       roleRepository.save(newRole);
       role1 = newRole;
     }
-
-
-    myUserDetailsService.setPassword(encoder.encode(registerReq.getPassword()));
-    myUserDetailsService.setUsername(registerReq.getUsername());
-    myUserDetailsService.setRoles(new HashSet<>(List.of(role1)));
-    manager.createUser(myUserDetailsService);
-
-    return true;
+    return role1;
   }
+
 
 }
