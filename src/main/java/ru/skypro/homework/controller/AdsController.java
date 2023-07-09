@@ -2,7 +2,6 @@ package ru.skypro.homework.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,9 +10,7 @@ import ru.skypro.homework.model.dto.AdsDto;
 import ru.skypro.homework.model.dto.CreateAds;
 import ru.skypro.homework.model.dto.FullAds;
 import ru.skypro.homework.model.dto.ResponseWrapperAds;
-import ru.skypro.homework.model.entity.Ads;
 import ru.skypro.homework.model.entity.Image;
-import ru.skypro.homework.model.entity.UserProfile;
 import ru.skypro.homework.security.MyUserDetailsService;
 import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.ImageService;

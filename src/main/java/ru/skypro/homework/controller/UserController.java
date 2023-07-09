@@ -50,7 +50,7 @@ public class UserController {
     public void getMeImage(@PathVariable("id") Integer id,
                            HttpServletResponse response)throws IOException {
         UserProfile userProfile = userService.getUserById(id);
-        Path path = Path.of(userProfile.getAvatar().getFilePath());
+        Path path = Path.of(userService.getAvatar(userProfile.getUsername()));
             try (InputStream is = Files.newInputStream(path);
                  OutputStream os = response.getOutputStream()) {
                 response.setStatus(200);

@@ -7,14 +7,14 @@ import ru.skypro.homework.model.dto.CreateComment;
 import ru.skypro.homework.model.dto.ResponseWrapperComment;
 import ru.skypro.homework.model.entity.Ads;
 import ru.skypro.homework.model.entity.Comment;
+import ru.skypro.homework.model.entity.UserProfile;
 import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.CommentService;
 import ru.skypro.homework.service.UserService;
 
 import java.time.ZoneId;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -22,30 +22,34 @@ public class CommentServiceImpl implements CommentService {
 
     private final AdsService adsService;
     private final CommentRepository commentRepository;
+    private final UserService userService;
 
 
     @Override
     public ResponseWrapperComment getAllComment(Integer id) {
         Ads ads = adsService.getAdsById(id);
-        Set<CommentDto> commentSet = new HashSet<>();
+        List<CommentDto> commentList = new ArrayList<>();
         ads.getComments().stream()
+                .sorted(Comparator.comparing(Comment::getCreatedAt))
                 .forEach(comment -> {
-                    commentSet.add(mappingComment(comment));
+                    commentList.add(mappingComment(comment));
                 });
 
         ResponseWrapperComment responseWrapperComment = new ResponseWrapperComment();
-        responseWrapperComment.setCount(commentSet.size());
-        responseWrapperComment.setResults(commentSet);
+        responseWrapperComment.setCount(commentList.size());
+        responseWrapperComment.setResults(commentList);
         return responseWrapperComment;
     }
 
     @Override
-    public CommentDto addComment(Integer id, CreateComment createComment) {
+    public CommentDto addComment(Integer id, CreateComment createComment, String username) {
+        UserProfile userProfile = userService.getUserProfile(username);
+
         Ads ads = adsService.getAdsById(id);
         Comment comment = new Comment();
         comment.setText(createComment.getText());
         comment.setAds(ads);
-        comment.setUserProfile(ads.getUserProfile());
+        comment.setUserProfile(userProfile);
         saveComment(comment);
         CommentDto commentDto = mappingComment(comment);
         return commentDto;

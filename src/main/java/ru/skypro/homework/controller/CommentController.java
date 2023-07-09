@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.model.dto.CommentDto;
 import ru.skypro.homework.model.dto.CreateComment;
 import ru.skypro.homework.model.dto.ResponseWrapperComment;
+import ru.skypro.homework.security.MyUserDetailsService;
 import ru.skypro.homework.service.CommentService;
 
 @Slf4j
@@ -18,6 +19,7 @@ import ru.skypro.homework.service.CommentService;
 public class CommentController {
 
     private final CommentService commentService;
+    private final MyUserDetailsService myUserDetailsService;
 
     @GetMapping("/{id}/comments")
     public ResponseEntity<ResponseWrapperComment> getAllComment (@PathVariable("id") Integer id) {
@@ -27,7 +29,7 @@ public class CommentController {
     @PostMapping("/{id}/comments")
     public ResponseEntity<CommentDto> addComment (@PathVariable("id") Integer id,
                                                      @RequestBody CreateComment comment) {
-        return ResponseEntity.ok(commentService.addComment(id, comment));
+        return ResponseEntity.ok(commentService.addComment(id, comment, myUserDetailsService.getUsername()));
     }
 
     @DeleteMapping("/{adId}/comments/{commentId}")
