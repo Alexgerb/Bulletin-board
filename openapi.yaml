@@ -206,7 +206,7 @@ paths:
       tags:
         - Объявления
       summary: 'Получить информацию об объявлении'
-      operationId: getAds
+      operationId: getFullAds
       parameters:
         - name: id
           in: path

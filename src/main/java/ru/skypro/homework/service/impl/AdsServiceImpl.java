@@ -1,6 +1,7 @@
 package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.model.dto.AdsDto;
@@ -26,18 +27,47 @@ public class AdsServiceImpl implements AdsService {
     private final AdsRepository adsRepository;
     private final UserService userService;
 
+    private final Integer COUNT_PAGE = 2;
+    private Integer page=0;
+
     @Override
     public ResponseWrapperAds getAllAds() {
+        if (checkCountAds()) {
+            return responseWrapperAdsWithPadding();
+        }
+        return responseWrapperAdsAll();
+    }
+
+    private ResponseWrapperAds responseWrapperAdsWithPadding() {
+        Integer countAds = adsRepository.findAll().size();
+        page = page + 1 > countAds-COUNT_PAGE ? 1 : page + 1;
+        PageRequest pageRequest = PageRequest.of(page - 1, COUNT_PAGE);
+        return getAds(adsRepository.findAll(pageRequest).getContent());
+
+    }
+
+    private ResponseWrapperAds getAds(List<Ads> content) {
         ResponseWrapperAds responseWrapperAds = new ResponseWrapperAds();
-        Set<AdsDto> adsDtoSet = new HashSet<>();
-        adsRepository.findAll().stream()
-                        .forEach(ads -> {
-                            AdsDto adsDto = adsMapping(ads);
-                            adsDtoSet.add(adsDto);
-                        });
-        responseWrapperAds.setCount(adsDtoSet.size());
-        responseWrapperAds.setResults(adsDtoSet);
+        List<AdsDto> adsDtoList = new ArrayList<>();
+        content.stream().sorted(Comparator.comparing(Ads::getId))
+                .forEach(ads -> {
+                    AdsDto adsDto = adsMapping(ads);
+                    adsDtoList.add(adsDto);
+                });
+        responseWrapperAds.setCount(adsDtoList.size());
+        responseWrapperAds.setResults(adsDtoList);
         return responseWrapperAds;
+    }
+
+    private ResponseWrapperAds responseWrapperAdsAll() {
+        return getAds(adsRepository.findAll());
+    }
+
+    private boolean checkCountAds() {
+        if (adsRepository.findAll().stream().count() > COUNT_PAGE) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -79,7 +109,7 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public FullAds getAds(Integer id) {
+    public FullAds getFullAds(Integer id) {
         Ads ads = adsRepository.findById(id).orElse(new Ads());
         FullAds fullAds = new FullAds();
         fullAds.setPk(ads.getId());

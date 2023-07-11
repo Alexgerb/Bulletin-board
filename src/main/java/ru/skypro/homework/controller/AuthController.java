@@ -33,7 +33,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterReq req) {
         String role = req.getRole() == null ? "USER" : req.getRole().toString();
-        if (authService.register(req, role)) {
+        if (authService.register(req, "ROLE_" + role)) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

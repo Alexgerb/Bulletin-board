@@ -13,7 +13,7 @@ public interface AdsService {
 
     AdsDto addAds(CreateAds createAds, MultipartFile image, String username);
 
-    FullAds getAds(Integer id);
+    FullAds getFullAds(Integer id);
 
     void deleteAds(Integer id);
 

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.model.dto.NewPassword;
@@ -33,6 +34,7 @@ public class UserController {
 
 
     @PostMapping("/set_password")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<NewPassword> setPassword(@RequestBody NewPassword newPassword) {
         if (userService.changePassword(newPassword, myUserDetailsService.getUsername())) {
             return ResponseEntity.ok(newPassword);
@@ -42,6 +44,7 @@ public class UserController {
     }
 
     @GetMapping("/me")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<UserDto> getMe() throws IOException {
         return ResponseEntity.ok(userService.getMe(myUserDetailsService.getUsername()));
     }
@@ -60,13 +63,14 @@ public class UserController {
     }
 
     @PatchMapping("/me")
-    // @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<UserDto> patchMe(@RequestBody UserDto userDto) {
         return ResponseEntity.ok(userService.updateUser(userDto, myUserDetailsService.getUsername()));
 
     }
 
     @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> updateUserImage(@RequestPart MultipartFile image) throws IOException {
         return ResponseEntity.ok(userService.updateUserImage(image, myUserDetailsService.getUsername()));
     }
