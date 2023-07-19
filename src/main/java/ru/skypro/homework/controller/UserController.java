@@ -5,13 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.model.dto.NewPassword;
 import ru.skypro.homework.model.dto.UserDto;
 import ru.skypro.homework.model.entity.UserProfile;
-import ru.skypro.homework.security.MyUserDetailsService;
 import ru.skypro.homework.service.UserService;
 
 import javax.servlet.http.HttpServletResponse;
@@ -30,13 +28,10 @@ public class UserController {
 
     private final UserService userService;
 
-    private final MyUserDetailsService myUserDetailsService;
-
 
     @PostMapping("/set_password")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<NewPassword> setPassword(@RequestBody NewPassword newPassword) {
-        if (userService.changePassword(newPassword, myUserDetailsService.getUsername())) {
+        if (userService.changePassword(newPassword)) {
             return ResponseEntity.ok(newPassword);
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -44,9 +39,8 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<UserDto> getMe() throws IOException {
-        return ResponseEntity.ok(userService.getMe(myUserDetailsService.getUsername()));
+        return ResponseEntity.ok(userService.getMe());
     }
 
     @GetMapping("/{id}/getAvatar")
@@ -63,16 +57,14 @@ public class UserController {
     }
 
     @PatchMapping("/me")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<UserDto> patchMe(@RequestBody UserDto userDto) {
-        return ResponseEntity.ok(userService.updateUser(userDto, myUserDetailsService.getUsername()));
+        return ResponseEntity.ok(userService.updateUser(userDto));
 
     }
 
     @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> updateUserImage(@RequestPart MultipartFile image) throws IOException {
-        return ResponseEntity.ok(userService.updateUserImage(image, myUserDetailsService.getUsername()));
+        return ResponseEntity.ok(userService.updateUserImage(image));
     }
 
 

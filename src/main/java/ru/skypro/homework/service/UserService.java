@@ -5,14 +5,12 @@ import ru.skypro.homework.model.dto.NewPassword;
 import ru.skypro.homework.model.dto.UserDto;
 import ru.skypro.homework.model.entity.UserProfile;
 
-import java.io.IOException;
-
 public interface UserService {
-    UserDto getMe(String username);
-    UserDto updateUser(UserDto updateProfileDto, String username);
-    Void updateUserImage(MultipartFile image, String username);
-    boolean changePassword(NewPassword newPassword, String username);
+    UserDto getMe();
+    UserDto updateUser(UserDto updateProfileDto );
+    Void updateUserImage(MultipartFile image );
+    boolean changePassword(NewPassword newPassword);
     String getAvatar(String username);
-    UserProfile getUserProfile(String username);
+    UserProfile getUserProfile();
     UserProfile getUserById(Integer id);
 }

@@ -2,13 +2,13 @@ package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.model.dto.AdsDto;
-import ru.skypro.homework.model.dto.CreateAds;
-import ru.skypro.homework.model.dto.FullAds;
-import ru.skypro.homework.model.dto.ResponseWrapperAds;
+import org.springframework.web.server.ResponseStatusException;
+import ru.skypro.homework.model.dto.*;
 import ru.skypro.homework.model.entity.Ads;
+import ru.skypro.homework.model.entity.Role;
 import ru.skypro.homework.model.entity.UserProfile;
 import ru.skypro.homework.repository.AdsRepository;
 import ru.skypro.homework.service.AdsService;
@@ -26,22 +26,21 @@ public class AdsServiceImpl implements AdsService {
     private final ImageService imageService;
     private final AdsRepository adsRepository;
     private final UserService userService;
-
-    private final Integer COUNT_PAGE = 2;
     private Integer page=0;
 
     @Override
     public ResponseWrapperAds getAllAds() {
-        if (checkCountAds()) {
-            return responseWrapperAdsWithPadding();
-        }
         return responseWrapperAdsAll();
     }
 
-    private ResponseWrapperAds responseWrapperAdsWithPadding() {
-        Integer countAds = adsRepository.findAll().size();
-        page = page + 1 > countAds-COUNT_PAGE ? 1 : page + 1;
-        PageRequest pageRequest = PageRequest.of(page - 1, COUNT_PAGE);
+    @Override
+    public ResponseWrapperAds getAllAdsWithPagination(Integer page, Integer size) {
+        return responseWrapperAdsWithPagination(page, size);
+    }
+
+
+    private ResponseWrapperAds responseWrapperAdsWithPagination(Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
         return getAds(adsRepository.findAll(pageRequest).getContent());
 
     }
@@ -63,16 +62,9 @@ public class AdsServiceImpl implements AdsService {
         return getAds(adsRepository.findAll());
     }
 
-    private boolean checkCountAds() {
-        if (adsRepository.findAll().stream().count() > COUNT_PAGE) {
-            return true;
-        }
-        return false;
-    }
-
     @Override
-    public AdsDto addAds(CreateAds createAds, MultipartFile image, String username) {
-        UserProfile userProfile = userService.getUserProfile(username);
+    public AdsDto addAds(CreateAds createAds, MultipartFile image) {
+        UserProfile userProfile = userService.getUserProfile();
         Ads ads = createNewAds(createAds, image, userProfile);
         userProfile.setAds(ads);
         return adsMapping(ads);
@@ -127,24 +119,36 @@ public class AdsServiceImpl implements AdsService {
     @Override
     public void deleteAds(Integer id) {
         Ads ads = adsRepository.findById(id).orElseThrow();
-        File image = new File(ads.getImage().getFilePath());
-        image.delete();
-        adsRepository.delete(ads);
+        UserProfile userProfile = userService.getUserProfile();
+        if (checkAccess(ads, userProfile)) {
+            File image = new File(ads.getImage().getFilePath());
+            image.delete();
+            adsRepository.delete(ads);
+        } else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
     }
+
+
 
     @Override
     public AdsDto updateAds(Integer id, CreateAds createAds) {
         Ads ads = adsRepository.findById(id).orElseThrow();
-        ads.setDescription(createAds.getDescription());
-        ads.setTitle(createAds.getTitle());
-        ads.setPrice(createAds.getPrice());
-        saveAds(ads);
-        return adsMapping(ads);
+        UserProfile userProfile = userService.getUserProfile();
+        if (checkAccess(ads, userProfile)) {
+            ads.setDescription(createAds.getDescription());
+            ads.setTitle(createAds.getTitle());
+            ads.setPrice(createAds.getPrice());
+            saveAds(ads);
+            return adsMapping(ads);
+        } else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
     }
 
     @Override
-    public ResponseWrapperAds getAdsMe(String username) {
-        UserProfile userProfile = userService.getUserProfile(username);
+    public ResponseWrapperAds getAdsMe() {
+        UserProfile userProfile = userService.getUserProfile();
         Set<AdsDto> adsDtoSet = new HashSet<>();
         userProfile.getAds().stream()
                 .forEach(ads -> {
@@ -162,15 +166,29 @@ public class AdsServiceImpl implements AdsService {
     @Override
     public void getAdsImage(Integer id, MultipartFile image) {
         Ads ads = adsRepository.findById(id).orElseThrow();
-        try {
-            imageService.uploadImage(ads, image);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        UserProfile userProfile = userService.getUserProfile();
+        if (checkAccess(ads, userProfile)) {
+            try {
+                imageService.uploadImage(ads, image);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
+
     }
 
     @Override
     public Ads getAdsById(Integer id) {
         return adsRepository.findById(id).orElseThrow();
+    }
+
+    private boolean checkAccess(Ads ads, UserProfile userProfile) {
+        Set<Role> roles = userProfile.getRoles();
+        if (roles.stream().anyMatch(role -> role.getName().equals(RoleEnum.ADMIN.toString())) || userProfile.getAds().contains(ads)) {
+            return true;
+        }
+        return false;
     }
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,7 +32,6 @@ import java.nio.file.Path;
 public class AdsController {
 
     private final AdsService adsService;
-    private final MyUserDetailsService myUserDetailsService;
     private final ImageService imageService;
 
 
@@ -40,11 +40,15 @@ public class AdsController {
         return ResponseEntity.ok(adsService.getAllAds());
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<ResponseWrapperAds> getAllAvatars(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+        return ResponseEntity.ok(adsService.getAllAdsWithPagination(page, size));
+    }
+
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<AdsDto> addAds(@RequestPart CreateAds properties,
                                          @RequestPart MultipartFile image) {
-        return ResponseEntity.ok(adsService.addAds(properties, image, myUserDetailsService.getUsername()));
+        return ResponseEntity.ok(adsService.addAds(properties, image));
     }
 
     @GetMapping("/{id}")
@@ -53,27 +57,23 @@ public class AdsController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteAds(@PathVariable("id") Integer id) {
         adsService.deleteAds(id);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<AdsDto> updateAds(@PathVariable("id") Integer id,
                                          @RequestBody CreateAds createAds) {
         return ResponseEntity.ok(adsService.updateAds(id, createAds));
     }
 
     @GetMapping("/me")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<ResponseWrapperAds> getAdsMe() {
-        return ResponseEntity.ok(adsService.getAdsMe(myUserDetailsService.getUsername()));
+        return ResponseEntity.ok(adsService.getAdsMe());
     }
 
     @PatchMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> updateAdsImage(@PathVariable("id") Integer id,@RequestPart MultipartFile image) throws IOException {
         adsService.getAdsImage(id, image);
         return ResponseEntity.ok().build();

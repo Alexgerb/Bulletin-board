@@ -1,14 +1,19 @@
 package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.skypro.homework.model.dto.CommentDto;
 import ru.skypro.homework.model.dto.CreateComment;
 import ru.skypro.homework.model.dto.ResponseWrapperComment;
+import ru.skypro.homework.model.dto.RoleEnum;
 import ru.skypro.homework.model.entity.Ads;
 import ru.skypro.homework.model.entity.Comment;
+import ru.skypro.homework.model.entity.Role;
 import ru.skypro.homework.model.entity.UserProfile;
 import ru.skypro.homework.repository.CommentRepository;
+import ru.skypro.homework.security.MyUserDetailsService;
 import ru.skypro.homework.service.AdsService;
 import ru.skypro.homework.service.CommentService;
 import ru.skypro.homework.service.UserService;
@@ -23,6 +28,7 @@ public class CommentServiceImpl implements CommentService {
     private final AdsService adsService;
     private final CommentRepository commentRepository;
     private final UserService userService;
+    private final MyUserDetailsService myUserDetailsService;
 
 
     @Override
@@ -42,8 +48,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDto addComment(Integer id, CreateComment createComment, String username) {
-        UserProfile userProfile = userService.getUserProfile(username);
+    public CommentDto addComment(Integer id, CreateComment createComment) {
+        UserProfile userProfile = userService.getUserProfile();
 
         Ads ads = adsService.getAdsById(id);
         Comment comment = new Comment();
@@ -62,14 +68,22 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(Integer adId, Integer commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow();
-        commentRepository.delete(comment);
+        if (checkAccess(comment)) {
+            commentRepository.delete(comment);
+        } else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
     }
 
     @Override
     public CommentDto updateComment(Integer adId, Integer commentId, CommentDto commentDto) {
         Comment comment = commentRepository.findById(commentId).orElseThrow();
-        comment.setText(commentDto.getText());
-        return mappingComment(comment);
+        if (checkAccess(comment)) {
+            comment.setText(commentDto.getText());
+            commentRepository.save(comment);
+            return mappingComment(comment);
+        }
+        return null;
     }
 
     private CommentDto mappingComment(Comment comment) {
@@ -86,5 +100,14 @@ public class CommentServiceImpl implements CommentService {
         commentDto.setAuthorFirstName(comment.getUserProfile().getFirstName());
 
         return commentDto;
+    }
+
+    private boolean checkAccess(Comment comment) {
+        UserProfile userProfile = userService.getUserProfile();
+        Set<Role> roles = userProfile.getRoles();
+        if (roles.stream().anyMatch(role -> role.getName().equals(RoleEnum.ADMIN.toString())) || userProfile.getComments().contains(comment)) {
+            return true;
+        }
+        return false;
     }
 }

@@ -7,11 +7,15 @@ import ru.skypro.homework.model.dto.FullAds;
 import ru.skypro.homework.model.dto.ResponseWrapperAds;
 import ru.skypro.homework.model.entity.Ads;
 
+import javax.persistence.criteria.CriteriaBuilder;
+
 public interface AdsService {
 
     ResponseWrapperAds getAllAds();
 
-    AdsDto addAds(CreateAds createAds, MultipartFile image, String username);
+    ResponseWrapperAds getAllAdsWithPagination(Integer page, Integer size);
+
+    AdsDto addAds(CreateAds createAds, MultipartFile image);
 
     FullAds getFullAds(Integer id);
 
@@ -19,7 +23,7 @@ public interface AdsService {
 
     AdsDto updateAds(Integer id, CreateAds createAds);
 
-    ResponseWrapperAds getAdsMe(String username);
+    ResponseWrapperAds getAdsMe();
 
     void getAdsImage(Integer id, MultipartFile image);
 

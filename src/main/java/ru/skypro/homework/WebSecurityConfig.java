@@ -19,10 +19,7 @@ import ru.skypro.homework.service.ImageService;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
-        prePostEnabled = true,
-        securedEnabled = true,
-        jsr250Enabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
 
   private final UserProfileRepository userProfileRepository;
@@ -55,6 +52,7 @@ public class WebSecurityConfig {
     http
             .csrf().disable()
             .authorizeRequests()
+            .antMatchers(HttpMethod.PATCH).hasAnyAuthority("ADMIN", "USER")
             .mvcMatchers(AUTH_WHITELIST).permitAll()
             .antMatchers(HttpMethod.GET, "/ads", "/ads/image/*", "/image/**", "/users/*/getAvatar").permitAll()
             .antMatchers("/ads/**", "/users/**").authenticated()
