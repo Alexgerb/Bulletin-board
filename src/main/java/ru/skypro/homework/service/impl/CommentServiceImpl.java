@@ -105,7 +105,8 @@ public class CommentServiceImpl implements CommentService {
     private boolean checkAccess(Comment comment) {
         UserProfile userProfile = userService.getUserProfile();
         Set<Role> roles = userProfile.getRoles();
-        if (roles.stream().anyMatch(role -> role.getName().equals(RoleEnum.ADMIN.toString())) || userProfile.getComments().contains(comment)) {
+       // if (roles.stream().anyMatch(role -> role.getName().equals(RoleEnum.ADMIN.toString())) || userProfile.getComments().contains(comment)) {
+        if (roles.stream().anyMatch(role -> role.getName().equals(RoleEnum.ADMIN.toString())) || userProfile.getId() == comment.getUserProfile().getId()) {
             return true;
         }
         return false;

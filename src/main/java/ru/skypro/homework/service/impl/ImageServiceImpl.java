@@ -44,7 +44,8 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public void uploadImage(Object o, MultipartFile imageFile) throws IOException {
         String dir = getDir(o);
-        Path filePath =  Path.of(dir, UUID.randomUUID().toString()+"." + getExtensions(imageFile.getOriginalFilename()));
+        String uuid = UUID.randomUUID().toString();
+        Path filePath =  Path.of(dir, uuid+"." + getExtensions(imageFile.getOriginalFilename()));
 
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
@@ -57,7 +58,7 @@ public class ImageServiceImpl implements ImageService {
             bis.transferTo(bos);
         }
         Image image = new Image();
-        image.setName(imageFile.getName());
+        image.setName(uuid);
         image.setFilePath(filePath.toString());
         imageRepository.save(image);
         addImage(o, image);
@@ -66,11 +67,11 @@ public class ImageServiceImpl implements ImageService {
 
     private void addImage(Object o, Image image) {
         if (o instanceof UserProfile) {
-            UserProfile userProfile = userProfileRepository.findByUsername(((UserProfile) o).getUsername());
             ((UserProfile) o).setAvatar(image);
-            userProfileRepository.save(userProfile);
+            userProfileRepository.save((UserProfile) o);
         } else {
             ((Ads) o).setImage(image);
+            adsRepository.save((Ads) o);
         }
     }
 

@@ -26,7 +26,6 @@ public class AdsServiceImpl implements AdsService {
     private final ImageService imageService;
     private final AdsRepository adsRepository;
     private final UserService userService;
-    private Integer page=0;
 
     @Override
     public ResponseWrapperAds getAllAds() {
@@ -186,7 +185,8 @@ public class AdsServiceImpl implements AdsService {
 
     private boolean checkAccess(Ads ads, UserProfile userProfile) {
         Set<Role> roles = userProfile.getRoles();
-        if (roles.stream().anyMatch(role -> role.getName().equals(RoleEnum.ADMIN.toString())) || userProfile.getAds().contains(ads)) {
+    //    if (roles.stream().anyMatch(role -> role.getName().equals(RoleEnum.ADMIN.toString())) || userProfile.getAds().contains(ads)) {
+        if (roles.stream().anyMatch(role -> role.getName().equals(RoleEnum.ADMIN.toString())) || userProfile.getId() == ads.getUserProfile().getId()) {
             return true;
         }
         return false;
