@@ -1,7 +1,12 @@
 package ru.skypro.homework.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.filters.AddDefaultCharsetFilter;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -34,40 +39,118 @@ public class AdsController {
     private final AdsService adsService;
     private final ImageService imageService;
 
-
+    @Operation(
+            operationId = "getALLAds",
+            tags = {"Объявления"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK", content = {
+                            @Content(mediaType = "*/*", schema = @Schema(implementation = AddDefaultCharsetFilter.ResponseWrapper.class))
+                    })
+            }
+    )
     @GetMapping()
     public ResponseEntity<ResponseWrapperAds> getAllAds() {
         return ResponseEntity.ok(adsService.getAllAds());
     }
 
+    @Operation(
+            operationId = "getAllAdsWithPagination",
+            tags = {"Объявления"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK", content = {
+                            @Content(mediaType = "*/*", schema = @Schema(implementation = AddDefaultCharsetFilter.ResponseWrapper.class))
+                    })
+            }
+    )
     @GetMapping("/all")
-    public ResponseEntity<ResponseWrapperAds> getAllAvatars(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+    public ResponseEntity<ResponseWrapperAds> getAllAdsWithPagination(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
         return ResponseEntity.ok(adsService.getAllAdsWithPagination(page, size));
     }
 
+    @Operation(
+            operationId = "addAds",
+            summary = "addAds",
+            tags = {"Объявления"},
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Created", content = {
+                            @Content(mediaType = "*/*", schema = @Schema(implementation = AdsDto.class))
+                    }),
+                    @ApiResponse(responseCode = "404", description = "Not Found"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized")
+            }
+    )
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AdsDto> addAds(@RequestPart CreateAds properties,
                                          @RequestPart MultipartFile image) {
         return ResponseEntity.ok(adsService.addAds(properties, image));
     }
 
+
+    @Operation(
+            operationId = "getAds",
+            summary = "getFullAds",
+            tags = {"Объявления"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK", content = {
+                            @Content(mediaType = "*/*", schema = @Schema(implementation = FullAds.class))
+                    }),
+                    @ApiResponse(responseCode = "404", description = "Not Found")
+            }
+    )
     @GetMapping("/{id}")
     public ResponseEntity<FullAds> getAds(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(adsService.getFullAds(id));
     }
 
+    @Operation(
+            operationId = "deleteAds",
+            summary = "deleteAds",
+            tags = {"Объявления"},
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "No Content"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden")
+            }
+    )
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAds(@PathVariable("id") Integer id) {
         adsService.deleteAds(id);
         return ResponseEntity.ok().build();
     }
 
+    @Operation(
+            operationId = "updateAds",
+            summary = "updateAds",
+            tags = {"Объявления"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK", content = {
+                            @Content(mediaType = "*/*", schema = @Schema(implementation = AdsDto.class))
+                    }),
+                    @ApiResponse(responseCode = "404", description = "Not Found"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized")
+            }
+    )
     @PatchMapping("/{id}")
     public ResponseEntity<AdsDto> updateAds(@PathVariable("id") Integer id,
                                          @RequestBody CreateAds createAds) {
         return ResponseEntity.ok(adsService.updateAds(id, createAds));
     }
 
+    @Operation(
+            operationId = "getAdsMe",
+            summary = "getAdsMe",
+            tags = {"Объявления"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK", content = {
+                            @Content(mediaType = "*/*", schema = @Schema(implementation = AddDefaultCharsetFilter.ResponseWrapper.class))
+                    }),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized"),
+                    @ApiResponse(responseCode = "403", description = "Forbidden"),
+                    @ApiResponse(responseCode = "404", description = "Not Found")
+            }
+    )
     @GetMapping("/me")
     public ResponseEntity<ResponseWrapperAds> getAdsMe() {
         return ResponseEntity.ok(adsService.getAdsMe());

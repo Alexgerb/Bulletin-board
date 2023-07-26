@@ -1,6 +1,8 @@
 package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,14 +27,19 @@ import java.util.*;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
+    private static final Logger logger = LoggerFactory.getLogger(CommentServiceImpl.class);
+
     private final AdsService adsService;
     private final CommentRepository commentRepository;
     private final UserService userService;
-    private final MyUserDetailsService myUserDetailsService;
 
-
+    /**
+     * метод возвращает wrapper все комментарий
+     * @return ResponseWrapperComment
+     * */
     @Override
     public ResponseWrapperComment getAllComment(Integer id) {
+        logger.info("the method of getting all comments");
         Ads ads = adsService.getAdsById(id);
         List<CommentDto> commentList = new ArrayList<>();
         ads.getComments().stream()
@@ -47,10 +54,14 @@ public class CommentServiceImpl implements CommentService {
         return responseWrapperComment;
     }
 
+    /**
+     * метод добавления комментария
+     * @return CommentDto
+     * */
     @Override
     public CommentDto addComment(Integer id, CreateComment createComment) {
+        logger.info("the method of adding a comment");
         UserProfile userProfile = userService.getUserProfile();
-
         Ads ads = adsService.getAdsById(id);
         Comment comment = new Comment();
         comment.setText(createComment.getText());
@@ -60,33 +71,52 @@ public class CommentServiceImpl implements CommentService {
         CommentDto commentDto = mappingComment(comment);
         return commentDto;
     }
-
+    /**
+     * метод сохранения комментария
+     * */
     private void saveComment(Comment comment) {
         commentRepository.save(comment);
     }
 
+    /**
+     * метод удаления комментария
+     * */
     @Override
     public void deleteComment(Integer adId, Integer commentId) {
+        logger.info("the method of deleting a comment");
         Comment comment = commentRepository.findById(commentId).orElseThrow();
         if (checkAccess(comment)) {
             commentRepository.delete(comment);
+            logger.info("comment deleted successfully");
         } else {
+            logger.debug("Insufficient rights to delete id{}", adId);
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
     }
 
+    /**
+     * метод обновления комментария
+     * @return CommentDto
+     * */
     @Override
     public CommentDto updateComment(Integer adId, Integer commentId, CommentDto commentDto) {
+        logger.info("the comment update method");
         Comment comment = commentRepository.findById(commentId).orElseThrow();
         if (checkAccess(comment)) {
             comment.setText(commentDto.getText());
             commentRepository.save(comment);
+            logger.info("comment updated  successfully");
             return mappingComment(comment);
         }
+        logger.debug("Insufficient rights to update id{}", adId);
         return null;
     }
 
+    /**
+     * преобразование Comment to CommentDto
+     * */
     private CommentDto mappingComment(Comment comment) {
+        logger.info("the method of mapping Comment to CommentDto");
         CommentDto commentDto = new CommentDto();
         commentDto.setText(comment.getText());
         commentDto.setPk(comment.getId());
@@ -102,10 +132,13 @@ public class CommentServiceImpl implements CommentService {
         return commentDto;
     }
 
+    /**
+     * метод проверяет принадлежность комментарий пользователю либо роль Администратора
+     * @return  true or false
+     * */
     private boolean checkAccess(Comment comment) {
         UserProfile userProfile = userService.getUserProfile();
         Set<Role> roles = userProfile.getRoles();
-       // if (roles.stream().anyMatch(role -> role.getName().equals(RoleEnum.ADMIN.toString())) || userProfile.getComments().contains(comment)) {
         if (roles.stream().anyMatch(role -> role.getName().equals(RoleEnum.ADMIN.toString())) || userProfile.getId() == comment.getUserProfile().getId()) {
             return true;
         }

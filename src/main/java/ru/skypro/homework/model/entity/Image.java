@@ -8,7 +8,7 @@ import java.util.Objects;
 @Table(name = "images")
 public class Image {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String name;
