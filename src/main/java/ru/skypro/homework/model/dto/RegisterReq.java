@@ -1,4 +1,4 @@
-package ru.skypro.homework.dto;
+package ru.skypro.homework.model.dto;
 
 import lombok.Data;
 
@@ -9,5 +9,5 @@ public class RegisterReq {
     private String firstName;
     private String lastName;
     private String phone;
-    private Role role;
+    private RoleEnum role;
 }

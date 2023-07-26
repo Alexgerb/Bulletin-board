@@ -2,23 +2,23 @@
 ###
 GET http://localhost:8080/get
 Content-Type: application/json
-Authorization: Basic userProfile@gmail.com password
+Authorization: Basic user password
 
 ###
 GET http://localhost:8080/ads/asddsfsdf/comment
 Content-Type: application/json
-Authorization: Basic userProfile@gmail.com password
+Authorization: Basic user password
 
 ###
 POST http://localhost:8080/username
 Content-Type: application/json
 
 {
-   "username": "userProfile@gmail.com",
-   "password": "password",
-   "firstName":  " asdad",
-   "lastName": " asdad",
-   "phone":  " asdad"
+  "username": "USER@gmail.com",
+  "password": "password",
+  "firstName":  " asdad",
+  "lastName": " asdad",
+  "phone":  " asdad"
 }
 
 ###
@@ -26,48 +26,57 @@ POST http://localhost:8080/register
 Content-Type: application/json
 
 {
-  "username": "user12",
-  "password": "password1"
+  "username": "111@gmail.com",
+  "password": "password"
+}
+
+###
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+  "username": "111@gmail.com",
+  "password": "password"
 }
 
 ###
 GET http://localhost:8080/ads/me
 Content-Type: application/json
-Authorization: Basic userProfile@gmail.com password
+Authorization: Basic user password
 
 ###
 GET http://localhost:8080/users/me
 Content-Type: application/json
-Authorization: Basic userProfile@gmail.com password
+Authorization: Basic user@gmail.com password
 
 ###
 PATCH http://localhost:8080/users/me
 Content-Type: application/json
-Authorization: Basic userProfile@gmail.com password
+Authorization: Basic user password
 
 {
-  "phone": "33333",
-  "lastName": "Ivanov",
-  "firstName": "Ivan",
-  "email": "userProfile",
+  "phone": "",
+  "lastName": "Gerb",
+  "firstName": "Aleksandr",
+  "email": "USER",
   "id": 1
 }
 
 ###
 GET http://localhost:8080/users/1
 Content-Type: application/json
-Authorization: Basic userProfile@gmail.com password
+Authorization: Basic user password
 
 ###
 GET http://localhost:8080/ads
 Content-Type: application/json
-Authorization: Basic userProfile@gmail.com password
+Authorization: Basic user password
 
 
 ###
 POST http://localhost:8080/users/set_password
 Content-Type: application/json
-Authorization: Basic userProfile@gmail.com password
+Authorization: Basic user password
 
 {
   "newPassword": "password",
@@ -77,7 +86,7 @@ Authorization: Basic userProfile@gmail.com password
 ###
 POST http://localhost:8080/ads
 Content-Type: application/json
-Authorization: Basic userProfile@gmail.com password
+Authorization: Basic user password
 
 {
   "image": "123",
@@ -90,8 +99,7 @@ Authorization: Basic userProfile@gmail.com password
 ###
 GET http://localhost:8080/ads
 Content-Type: application/json
-Authorization: Basic userProfile@gmail.com password
-
+Authorization: Basic user password
 
 
 
